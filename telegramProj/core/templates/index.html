@@ -1,0 +1,234 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Halls of Ivy</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+   
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/igorescobar/jQuery-Mask-Plugin/master/src/jquery.mask.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+
+</head>
+<body style="overflow: hidden;">
+    <video id="myVideo" src="{% static 'css/videofinal.mp4'%}" autoplay muted>
+    </video>
+    
+    <div class="loop-container">
+        <video style="display: none;" id="loop" src="{% static 'css/loopfinal.mp4'%}" loop muted>
+    </video>
+    </div>
+
+      
+    <style>
+        
+        video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            
+        }
+        .messages{
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .success{
+            
+            color: green;
+        }
+
+        .error{
+            
+            color: red;
+        }
+    </style>
+   
+
+        <form method="POST" class="hidden" id="inscription-form">
+            {% csrf_token %}
+            <h3>The Halls of Ivy</h3>
+            <!--<h4>Numero de inscricoes: {{n}}</h4>-->
+            <label for="id_nome"></label>
+            <input style="padding-left: 5%;"class="Input" type="text" placeholder="Nome" id="id_nome" name="nome" required>
+    
+            <label for="id_email"></label>
+            <input style="padding-left: 5%;"class="Input" type="email" placeholder="Email" id="id_email" name="email" required>
+    
+            <label for="id_phone"></label>
+            <input style="padding-left: 5%;"class="Input" type="text" placeholder="Telemóvel" id="id_phone" name="phone" class="phone" required/>
+    
+            <button type="submit" id="submit-button">INSCREVER</button>
+            <div class="messages">
+                {% if messages %}
+                {% for message in messages %}
+                    <h5{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h5>
+                {% endfor %}
+        {% endif %}
+            </div>
+            
+
+    </div>
+    
+
+    <script>
+        $(document).ready(function(){
+            $('body').on('focus', '.phone', function(){
+                var maskBehavior = function (val) {
+                    return val.replace(/\D/g, '').length === 12 ? '000 000 000' : '+351 000 000 000';
+                }
+                $(this).mask(maskBehavior);
+            });
+        });
+
+
+           
+
+            function changeBorderColor() {
+            var input = document.getElementsByClassName("Input");
+            input.style.borderColor = "white";
+            }
+
+
+            document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                var formContainer = document.querySelector('form');
+                if (formContainer) {
+                formContainer.classList.remove("hidden");
+                formContainer.classList.add("visible");
+                }
+            }, 5270); // 5130 milliseconds = 5.13 seconds
+            });
+
+            // Get references to both video elements
+            const firstVideo = document.getElementById('myVideo');
+            const secondVideo = document.getElementById('loop');
+            const divLoop = document.getElementsByClassName('loop-container');
+            // Function to play the second video
+            function playSecondVideo() {
+                // Play the second video
+                secondVideo.play();
+                secondVideo.style.display = 'block';
+
+
+            }
+
+            // Set a timeout to play the second video after 5 seconds (adjust the duration as needed)
+            setTimeout(playSecondVideo, 10000);
+            
+
+            $(document).ready(function() {
+            // Intercept the form submission event
+            $(document).ready(function() {
+            // Intercept the form submission event
+            $('#inscription-form').submit(function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Retrieve the form data
+                var formData = $(this).serialize();
+
+                // Check email uniqueness
+                var email = $('#id_email').val().trim();
+                if (email) {
+                    checkEmailUniqueness(email)
+                        .then(function(isUnique) {
+                            updateFieldValidity($('#id_email')[0], isUnique);
+                            if (isUnique) {
+                                // Email is unique, proceed with phone uniqueness check
+                                var phone = $('#id_phone').val().trim();
+                                if (phone) {
+                                    checkPhoneUniqueness(phone)
+                                        .then(function(isUnique) {
+                                            updateFieldValidity($('#id_phone')[0], isUnique);
+                                            if (isUnique) {
+                                                // Both email and phone are unique, submit the form
+                                                submitForm(formData);
+                                            }
+                                        })
+                                        .catch(function(error) {
+                                            console.error('Error:', error);
+                                        });
+                                } else {
+                                    // Phone field is empty, submit the form
+                                    submitForm(formData);
+                                }
+                            }
+                        })
+                        .catch(function(error) {
+                            console.error('Error:', error);
+                        });
+                }
+            });
+        });
+
+        // Function to check the uniqueness of the email
+        function checkEmailUniqueness(email) {
+            return fetch(`/check_unique_email/?email=${encodeURIComponent(email)}`)
+                .then(response => response.json())
+                .then(data => data.is_unique)
+                .catch(error => {
+                    console.error('Error:', error);
+                    return false;
+                });
+        }
+
+        // Function to check the uniqueness of the phone number
+        function checkPhoneUniqueness(phone) {
+            return fetch(`/check_unique_phone/?phone=${encodeURIComponent(phone)}`)
+                .then(response => response.json())
+                .then(data => data.is_unique)
+                .catch(error => {
+                    console.error('Error:', error);
+                    return false;
+                });
+        }
+
+        // Function to update the field validity based on uniqueness check
+        function updateFieldValidity(element, isUnique) {
+        const errorClass = 'error';
+        
+
+        if (!isUnique) {
+             $('.messages').html('<h5 class="error">Erro na inscrição. Valores já usados.</h5>');
+        } else {$('.messages').html('<h5 class="success">Inscrição enviada com sucesso</h5>');
+           
+        }
+        }
+
+
+
+
+
+        // Function to submit the form data
+        function submitForm(formData) {
+            $.ajax({
+                url: '', // Use the current URL for the form submission
+                type: 'POST',
+                data: formData,
+                success: function() {
+                    toastr.success('Inscrição enviada com sucesso');
+                    $('#id_email').val(''); // Clear email field after successful submission
+                    $('#id_phone').val(''); // Clear phone field after successful submission
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Erro ao enviar inscrição. Verifique os dados e tente novamente.');
+                    console.error('Error:', error);
+                }
+            });
+        }})
+
+    </script>
+</body>
+</html>

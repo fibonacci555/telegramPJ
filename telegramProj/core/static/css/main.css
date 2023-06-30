@@ -1,0 +1,204 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
+
+
+:root{
+    --heig:60px;
+    --espa:20px;
+}
+
+*,
+*:before,
+*:after{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Kanit', sans-serif;
+}
+
+html{
+    overflow: hidden;
+    scroll-behavior: none;
+}
+
+body{
+    background-color: #080710;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.shape:first-child{
+    background: linear-gradient(
+        #1845ad,
+        #23a2f6
+    );
+    left: -80px;
+    top: -80px;
+}
+.shape:last-child{
+    background: linear-gradient(
+        to right,
+        #ff512f,
+        #f09819
+    );
+    right: -30px;
+    bottom: -80px;
+}
+form{
+    opacity: 0;   
+    width: 30%;
+    background-color: rgba(255, 255, 255, 0);
+    position: absolute;
+    transform: translate(-50%,-50%);
+    top: 55%;
+    left: 50%;
+    border-radius: 20px;
+
+    
+    padding: 0px 35px;
+    
+}
+
+
+
+
+
+
+@keyframes fadeInBottom {
+    from {
+        top:100%;
+        opacity: 1;
+        
+    }
+    to { opacity: 1;
+    top:55%; }
+}
+
+
+
+
+form *{
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    outline: none;
+    border: none;
+}
+form h3{
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 42px;
+    text-align: center;
+}
+
+label{
+    display: block;
+    margin-top: var(--espa);
+    font-size: 16px;
+    font-weight: 500;
+}
+input{
+    display: block;
+    height: var(--heig);
+    width: 100%;
+    background-color: rgba(255,255,255,0.07);
+    border-radius: 25px;
+    padding: 0 10px;
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 300;
+    border-top: 2px white;
+
+}
+
+
+input {
+    border: 1px solid transparent;
+    
+  }
+
+  
+  input:focus {
+    outline: none;
+    border-color: white;
+   
+  }
+
+
+::placeholder{
+    color: #e5e5e5;
+
+}
+button{
+    margin-top: var(--espa);
+    max-height: var(--heig);
+    width: 100%;
+    background-color: #ffffff;
+    color: #080710;
+    padding: 15px 0;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: lighter;
+}
+
+/* For phones */
+@media only screen and (max-width: 480px) {
+    form{
+        opacity: 0;   
+        width: 95%;
+        background-color: rgba(255, 255, 255, 0);
+        position: absolute;
+        transform: translate(-50%,-50%);
+        top: 65%;
+        left: 50%;
+        border-radius: 20px;
+    
+        
+        padding: 0px 35px;
+        
+    }
+    
+    
+    
+    
+    
+    
+    @keyframes fadeInBottom {
+        from {
+            top:100%;
+            opacity: 1;
+            
+        }
+        to { opacity: 1;
+        top:65%; }
+    }
+  }
+  
+  /* For tablets */
+  @media only screen and (min-width: 481px) and (max-width: 1010px) {
+    form{
+    
+        width: 80%;}
+  }
+  
+  /* For desktops */
+  @media only screen and (min-width: 1010px) {
+    /* Add your desktop styles here */
+  }
+
+
+  form.visible {
+    animation-name: fadeInBottom;
+    animation-duration: 1s; 
+    opacity: 1;
+  }
+  
+  .hidden {
+    opacity: 0;
+    visibility: hidden;
+    
+  }
+  
+
+
